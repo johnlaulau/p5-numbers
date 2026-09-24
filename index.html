@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="zh-HK" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>陰森校園：數字近似值試膽大作戰 (香港小學五年級數學)</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Custom Tailwind Config for Spooky Theme -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            spooky: {
+              bg: '#0a0d14',
+              card: '#121824',
+              green: '#39ff14',
+              purple: '#a855f7',
+              red: '#ff2a5f',
+              glow: '#22c55e',
+              dark: '#05070a'
+            }
+          },
+          fontFamily: {
+            mono: ['Courier New', 'Courier', 'monospace'],
+            sans: ['PingFang HK', 'Microsoft JhengHei', 'sans-serif']
+          },
+          animation: {
+            'ghost-float': 'float 3s ease-in-out infinite',
+            'flicker': 'flicker 2s infinite',
+            'pulse-glow': 'pulseGlow 1.5s infinite alternate'
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-10px)' },
+            },
+            flicker: {
+              '0%, 100%': { opacity: 1 },
+              '50%': { opacity: 0.7 },
+              '52%': { opacity: 0.2 },
+              '54%': { opacity: 0.9 },
+            },
+            pulseGlow: {
+              '0%': { boxShadow: '0 0 10px rgba(57, 255, 20, 0.3)' },
+              '100%': { boxShadow: '0 0 25px rgba(57, 255, 20, 0.8), 0 0 10px rgba(168, 85, 247, 0.5)' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0a0d14;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #374151;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #a855f7;
+    }
+
+    /* Spooky mist background effect */
+    .mist-bg {
+      background: radial-gradient(circle at 50% 30%, rgba(168, 85, 247, 0.15) 0%, rgba(57, 255, 20, 0.05) 40%, rgba(10, 13, 20, 0.95) 100%);
+    }
+
+    .spooky-border {
+      border: 2px solid rgba(168, 85, 247, 0.4);
+      box-shadow: 0 0 15px rgba(168, 85, 247, 0.2);
+    }
+
+    .spooky-border-green {
+      border: 2px solid rgba(57, 255, 20, 0.5);
+      box-shadow: 0 0 15px rgba(57, 255, 20, 0.2);
+    }
+
+    .text-glow-green {
+      text-shadow: 0 0 10px rgba(57, 255, 20, 0.7);
+    }
+    .text-glow-purple {
+      text-shadow: 0 0 10px rgba(168, 85, 247, 0.7);
+    }
+    .text-glow-red {
+      text-shadow: 0 0 10px rgba(255, 42, 95, 0.7);
+    }
+  </style>
+</head>
+<body class="bg-spooky-bg text-gray-100 font-sans min-h-screen flex flex-col justify-between mist-bg selection:bg-spooky-purple selection:text-white">
+
+  <!-- Audio Control / Top Nav -->
+  <header class="w-full bg-spooky-dark/80 backdrop-blur border-b border-purple-900/40 p-4 sticky top-0 z-50">
+    <div class="max-w-4xl mx-auto flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <span class="text-2xl animate-ghost-float">👻</span>
+        <div>
+          <h1 class="text-xl font-bold text-spooky-green text-glow-green tracking-wide">陰森校園：數字近似值大作戰</h1>
+          <p class="text-xs text-purple-300 hidden sm:block">香港小學五年級數學自主學習平台（四捨五入）</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <button id="audio-toggle-btn" class="p-2 rounded-lg bg-gray-800/80 hover:bg-gray-700 border border-purple-500/30 text-purple-300 transition-all text-sm flex items-center gap-2">
+          <i class="fas fa-volume-up" id="audio-icon"></i>
+          <span class="text-xs hidden sm:inline" id="audio-status-text">音效開</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="max-w-4xl w-full mx-auto p-4 flex-grow flex flex-col justify-center my-4">
+
+    <!-- ========================================== -->
+    <!-- PAGE 1: START SCREEN (陰森校門) -->
+    <!-- ========================================== -->
+    <section id="page-start" class="w-full space-y-6">
+      <div class="bg-spooky-card rounded-2xl p-6 sm:p-8 spooky-border relative overflow-hidden text-center space-y-6">
+        <!-- Spooky Decorative Background Elements -->
+        <div class="absolute -top-10 -right-10 w-40 h-40 bg-purple-600/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-emerald-600/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="space-y-2">
+          <div class="inline-block px-3 py-1 bg-purple-950/80 border border-purple-500/40 rounded-full text-xs text-purple-300 animate-pulse">
+            🎃 試膽挑戰模式：10 題限制時間 3 分鐘
+          </div>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-purple-300 text-glow-purple tracking-wider">
+            歡迎來到陰森試膽教室
+          </h2>
+          <p class="text-gray-400 text-sm max-w-lg mx-auto">
+            傳說在深夜的校園裡，只有掌握「四捨五入法」正確取近似值的勇者，才能解開幽靈鎖鏈並登上榮耀幽靈榜！
+          </p>
+        </div>
+
+        <!-- Student Information Form -->
+        <div class="bg-gray-900/90 rounded-xl p-5 border border-purple-800/50 max-w-md mx-auto space-y-4 text-left shadow-lg">
+          <h3 class="text-sm font-semibold text-spooky-green flex items-center gap-2">
+            <i class="fas fa-id-card"></i> 請填寫同學資料：
+          </h3>
+
+          <div class="grid grid-cols-2 gap-4">
+            <!-- Class Selection -->
+            <div>
+              <label class="block text-xs font-medium text-gray-300 mb-1">班別 *</label>
+              <select id="select-class" class="w-full bg-slate-950 border border-purple-500/40 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-spooky-green transition">
+                <option value="5A">5A 班</option>
+                <option value="5B">5B 班</option>
+                <option value="5C">5C 班</option>
+                <option value="5D">5D 班</option>
+                <option value="5E">5E 班</option>
+              </select>
+            </div>
+
+            <!-- Student Number Selection -->
+            <div>
+              <label class="block text-xs font-medium text-gray-300 mb-1">學號 *</label>
+              <select id="select-number" class="w-full bg-slate-950 border border-purple-500/40 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-spooky-green transition">
+                <!-- Dynamically generated options 1-30 -->
+              </select>
+            </div>
+          </div>
+
+          <!-- Name Input -->
+          <div>
+            <label class="block text-xs font-medium text-gray-300 mb-1">姓名 (選填)</label>
+            <input type="text" id="input-name" placeholder="請輸入姓名" class="w-full bg-slate-950 border border-purple-500/40 rounded-lg px-3 py-2 text-white placeholder-gray-600 focus:outline-none focus:border-spooky-green transition text-sm">
+          </div>
+        </div>
+
+        <!-- Game Rules Box -->
+        <div class="bg-gray-950/60 rounded-xl p-4 border border-gray-800 max-w-md mx-auto text-left text-xs space-y-2 text-gray-300">
+          <div class="font-bold text-spooky-green text-sm flex items-center gap-1.5">
+            <i class="fas fa-scroll"></i> 遊戲規則說明：
+          </div>
+          <ul class="list-disc list-inside space-y-1 text-gray-400">
+            <li>每局共 <span class="text-purple-300 font-bold">10 題</span>，限時 <span class="text-purple-300 font-bold">3 分鐘 (180 秒)</span>。</li>
+            <li>題目範圍：四捨五入至 <span class="text-emerald-400 font-bold">萬位、十萬位、百萬位、千萬位或億位</span>。</li>
+            <li>計分機制：答對 <span class="text-green-400 font-bold">+10 分</span>；答錯 <span class="text-red-400 font-bold">-5 分</span> 且會提供思維拆解提示讓你補答。</li>
+            <li>連續答對 5 題觸發 <span class="text-amber-400 font-bold">鬼火連擊獎勵 +5 分</span>！</li>
+          </ul>
+        </div>
+
+        <!-- Start Button -->
+        <button id="btn-start-game" class="w-full max-w-md py-4 rounded-xl bg-gradient-to-r from-purple-700 via-purple-600 to-emerald-600 hover:from-purple-600 hover:to-emerald-500 text-white font-extrabold text-lg tracking-wider shadow-lg transform active:scale-95 transition-all duration-200 border border-emerald-400/30 flex items-center justify-center gap-3 animate-pulse-glow mx-auto">
+          <span>踏入陰森教室開始試膽</span>
+          <i class="fas fa-ghost"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- PAGE 2: GAME SCREEN (試膽教室) -->
+    <!-- ========================================== -->
+    <section id="page-game" class="w-full space-y-4 hidden">
+      <!-- HUD Top Bar -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <!-- Timer -->
+        <div class="bg-spooky-card border border-purple-500/30 rounded-xl p-3 flex items-center gap-3">
+          <div class="text-2xl text-red-400"><i class="fas fa-hourglass-half animate-spin"></i></div>
+          <div>
+            <div class="text-[10px] text-gray-400 uppercase tracking-wider">剩餘時間</div>
+            <div id="hud-timer" class="text-xl font-mono font-bold text-red-400">03:00</div>
+          </div>
+        </div>
+
+        <!-- Current Score -->
+        <div class="bg-spooky-card border border-purple-500/30 rounded-xl p-3 flex items-center gap-3">
+          <div class="text-2xl text-yellow-400"><i class="fas fa-star"></i></div>
+          <div>
+            <div class="text-[10px] text-gray-400 uppercase tracking-wider">目前得分</div>
+            <div id="hud-score" class="text-xl font-mono font-bold text-yellow-400">0</div>
+          </div>
+        </div>
+
+        <!-- Streak Count -->
+        <div class="bg-spooky-card border border-purple-500/30 rounded-xl p-3 flex items-center gap-3">
+          <div class="text-2xl text-emerald-400"><i class="fas fa-fire"></i></div>
+          <div>
+            <div class="text-[10px] text-gray-400 uppercase tracking-wider">連續答對</div>
+            <div id="hud-streak" class="text-xl font-mono font-bold text-emerald-400">0</div>
+          </div>
+        </div>
+
+        <!-- Question Progress -->
+        <div class="bg-spooky-card border border-purple-500/30 rounded-xl p-3 flex items-center gap-3">
+          <div class="text-2xl text-purple-400"><i class="fas fa-list-check"></i></div>
+          <div>
+            <div class="text-[10px] text-gray-400 uppercase tracking-wider">進度</div>
+            <div id="hud-progress" class="text-xl font-mono font-bold text-purple-300">1 / 10</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Question Main Box -->
+      <div class="bg-spooky-card rounded-2xl p-6 sm:p-8 spooky-border space-y-6 relative">
+        
+        <!-- Question Title Header -->
+        <div class="flex items-center justify-between border-b border-gray-800 pb-3">
+          <span class="text-xs font-bold px-3 py-1 rounded-full bg-purple-950 text-purple-300 border border-purple-700/50">
+            題目 <span id="q-number-badge">1</span>
+          </span>
+          <span id="q-target-badge" class="text-xs font-bold px-3 py-1 rounded-full bg-emerald-950 text-spooky-green border border-emerald-700/50">
+            取近似值至【萬位】
+          </span>
+        </div>
+
+        <!-- Question Prompt Area -->
+        <div class="text-center space-y-3 py-2">
+          <p class="text-sm text-gray-300">請根據四捨五入原則，將以下指定數字取近似值：</p>
+          <div class="inline-block bg-slate-950 border-2 border-purple-500/50 rounded-2xl px-6 py-4 shadow-inner">
+            <span id="q-number-display" class="text-3xl sm:text-4xl font-mono font-extrabold text-spooky-green tracking-widest text-glow-green">
+              --,--,--
+            </span>
+          </div>
+          <div class="text-xs text-purple-300">
+            請取近似值至：<span id="q-target-place-text" class="text-yellow-300 font-bold text-base underline">萬位</span>
+          </div>
+        </div>
+
+        <!-- Answer Input Form -->
+        <form id="game-answer-form" class="space-y-4 max-w-md mx-auto">
+          <div>
+            <label class="block text-xs text-gray-400 mb-1 text-center">
+              請輸入你的答案（可帶逗號或純數字，例如: 460000000 或 460,000,000）
+            </label>
+            <input type="text" id="input-answer" autocomplete="off" placeholder="在此輸入答案..." class="w-full text-center text-xl sm:text-2xl font-mono font-bold bg-slate-950 border-2 border-purple-500/60 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-spooky-green transition shadow-lg">
+          </div>
+
+          <button type="submit" id="btn-submit-answer" class="w-full py-3.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-base tracking-wider transition shadow-lg flex items-center justify-center gap-2 border border-purple-400/40 active:scale-95">
+            <i class="fas fa-check-circle"></i>
+            <span>提交答案</span>
+          </button>
+        </form>
+
+        <!-- Dynamic Hint / Feedback Modal Container -->
+        <div id="feedback-box" class="hidden rounded-xl p-4 text-sm space-y-3 animate-fade-in">
+          <!-- Populated dynamically via JS -->
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- PAGE 3: LEADERBOARD SCREEN (幽靈榜) -->
+    <!-- ========================================== -->
+    <section id="page-leaderboard" class="w-full space-y-6 hidden">
+      <!-- Game Result Summary Card -->
+      <div class="bg-spooky-card rounded-2xl p-6 sm:p-8 spooky-border text-center space-y-6">
+        <div class="space-y-2">
+          <div class="text-4xl animate-bounce">🏆</div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-spooky-green text-glow-green">
+            試膽挑戰完成！
+          </h2>
+          <p class="text-xs text-gray-400">你的冒險成績已成功紀錄並上傳至雲端幽靈榜</p>
+        </div>
+
+        <!-- Summary Grid -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-2xl mx-auto">
+          <div class="bg-slate-950/80 p-3 rounded-xl border border-gray-800">
+            <div class="text-xs text-gray-400">最終得分</div>
+            <div id="res-score" class="text-2xl font-mono font-bold text-yellow-400">0</div>
+          </div>
+          <div class="bg-slate-950/80 p-3 rounded-xl border border-gray-800">
+            <div class="text-xs text-gray-400">總用時</div>
+            <div id="res-time" class="text-2xl font-mono font-bold text-purple-300">0s</div>
+          </div>
+          <div class="bg-slate-950/80 p-3 rounded-xl border border-gray-800">
+            <div class="text-xs text-gray-400">答對題數</div>
+            <div id="res-accuracy" class="text-2xl font-mono font-bold text-emerald-400">0/10</div>
+          </div>
+          <div class="bg-slate-950/80 p-3 rounded-xl border border-gray-800">
+            <div class="text-xs text-gray-400">即時排名</div>
+            <div id="res-rank" class="text-2xl font-mono font-bold text-spooky-green">第 -- 名</div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row justify-center gap-3 pt-2 max-w-md mx-auto">
+          <button id="btn-replay" class="flex-1 py-3 px-4 rounded-xl bg-purple-700 hover:bg-purple-600 text-white font-bold text-sm tracking-wide transition border border-purple-400/30 flex items-center justify-center gap-2">
+            <i class="fas fa-rotate-right"></i>
+            <span>再試一次</span>
+          </button>
+          <button id="btn-review-errors" class="flex-1 py-3 px-4 rounded-xl bg-amber-700 hover:bg-amber-600 text-white font-bold text-sm tracking-wide transition border border-amber-400/30 flex items-center justify-center gap-2">
+            <i class="fas fa-book-open"></i>
+            <span>錯題重溫 (<span id="review-count-badge">0</span>)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Cloud Leaderboard Table Box -->
+      <div class="bg-spooky-card rounded-2xl p-6 spooky-border space-y-4">
+        <div class="flex items-center justify-between border-b border-gray-800 pb-3">
+          <h3 class="text-lg font-bold text-purple-300 text-glow-purple flex items-center gap-2">
+            <i class="fas fa-crown text-yellow-400"></i> 全校即時幽靈龍虎榜
+          </h3>
+          <span class="text-xs text-gray-400">即時雲端同步</span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm text-gray-300">
+            <thead class="bg-slate-950 text-xs uppercase text-purple-400 border-b border-gray-800">
+              <tr>
+                <th class="p-3">名次</th>
+                <th class="p-3">班別及學號</th>
+                <th class="p-3">姓名</th>
+                <th class="p-3 text-right">得分</th>
+                <th class="p-3 text-right">用時</th>
+                <th class="p-3 text-center">時間</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboard-tbody" class="divide-y divide-gray-800/60 font-mono">
+              <!-- Dynamically populated rows -->
+              <tr>
+                <td colspan="6" class="text-center p-6 text-gray-500">載入雲端排行榜中...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- PAGE 4: ERROR REVIEW SCREEN (陰森復習室) -->
+    <!-- ========================================== -->
+    <section id="page-review" class="w-full space-y-6 hidden">
+      <div class="bg-spooky-card rounded-2xl p-6 sm:p-8 spooky-border space-y-6">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-gray-800 pb-4 gap-4">
+          <div>
+            <h2 class="text-2xl font-extrabold text-amber-400 text-glow-purple flex items-center gap-2">
+              <i class="fas fa-ghost"></i> 陰森復習室（錯題集）
+            </h2>
+            <p class="text-xs text-gray-400 mt-1">細心閱讀四捨五入思考步驟，將知識融會貫通！</p>
+          </div>
+          <button id="btn-back-to-leaderboard" class="py-2 px-4 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-bold transition flex items-center gap-2 border border-gray-700">
+            <i class="fas fa-arrow-left"></i>
+            <span>返回排行榜</span>
+          </button>
+        </div>
+
+        <!-- Container for Wrong Questions Cards -->
+        <div id="review-list-container" class="space-y-4">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="w-full bg-spooky-dark border-t border-purple-900/30 p-4 text-center text-xs text-gray-500">
+    <div class="max-w-4xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
+      <div>香港小學五年級數學科自學軟體 &copy; 數字近似值（四捨五入）</div>
+      <div class="text-purple-400/80">👻 陰森校園風格教學專案</div>
+    </div>
+  </footer>
+
+  <!-- Firebase Modular Imports -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    // Global application configuration provided by environment or fallback
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'spooky-math-p5-app';
+    const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
+      apiKey: "demo-api-key",
+      authDomain: "demo.firebaseapp.com",
+      projectId: "demo-project",
+      storageBucket: "demo.appspot.com",
+      messagingSenderId: "123456789",
+      appId: "1:123456789:web:abcdef"
+    };
+
+    // Global Cloud Database Manager
+    window.SpookyCloud = {
+      db: null,
+      auth: null,
+      user: null,
+      appId: appId,
+      isReady: false,
+
+      async init() {
+        try {
+          const app = initializeApp(firebaseConfig);
+          this.auth = getAuth(app);
+          this.db = getFirestore(app);
+
+          if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+            await signInWithCustomToken(this.auth, __initial_auth_token);
+          } else {
+            await signInAnonymously(this.auth);
+          }
+
+          this.user = this.auth.currentUser;
+          this.isReady = true;
+          console.log("Firebase Auth & Firestore initialized successfully.");
+
+          // Listen to leaderboard updates
+          this.subscribeLeaderboard();
+        } catch (err) {
+          console.warn("Cloud connection limited, falling back to local simulation:", err);
+          renderMockLeaderboard();
+        }
+      },
+
+      async saveScore(scoreData) {
+        if (!this.isReady || !this.user || !this.db) {
+          console.warn("Firestore not ready, score stored locally.");
+          saveLocalScore(scoreData);
+          return;
+        }
+
+        try {
+          // Rule 1 Strict Path: /artifacts/{appId}/public/data/{collectionName}
+          const colRef = collection(this.db, 'artifacts', this.appId, 'public', 'data', 'haunted_math_leaderboard');
+          await addDoc(colRef, {
+            ...scoreData,
+            userId: this.user.uid,
+            timestamp: new Date().toISOString()
+          });
+          console.log("Score saved to cloud successfully!");
+        } catch (e) {
+          console.error("Error saving score to Firestore:", e);
+          saveLocalScore(scoreData);
+        }
+      },
+
+      subscribeLeaderboard() {
+        if (!this.isReady || !this.db) return;
+
+        try {
+          // Rule 2: Fetch all documents with simple query without compound orderBy to prevent index errors
+          const colRef = collection(this.db, 'artifacts', this.appId, 'public', 'data', 'haunted_math_leaderboard');
+          
+          onSnapshot(colRef, (snapshot) => {
+            const list = [];
+            snapshot.forEach(doc => {
+              list.push({ id: doc.id, ...doc.data() });
+            });
+            
+            // Client-side sorting: Highest score first, then lowest time
+            list.sort((a, b) => {
+              if (b.score !== a.score) return b.score - a.score;
+              return a.timeUsed - b.timeUsed;
+            });
+
+            updateLeaderboardUI(list);
+          }, (error) => {
+            console.error("Leaderboard snapshot error:", error);
+            renderMockLeaderboard();
+          });
+        } catch (e) {
+          console.error("Leaderboard subscription failed:", e);
+          renderMockLeaderboard();
+        }
+      }
+    };
+
+    // Initialize Firebase Cloud system on window load
+    window.addEventListener('DOMContentLoaded', () => {
+      window.SpookyCloud.init();
+    });
+  </script>
+
+  <!-- Game Logic, Web Audio API Synthesizer & UI Script -->
+  <script>
+
+    // Sound Synthesizer using Web Audio API
+    class SpookyAudioSynthesizer {
+      constructor() {
+        this.ctx = null;
+        this.enabled = true;
+      }
+
+      initCtx() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioContext();
+        }
+        if (this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      playCorrect() {
+        if (!this.enabled) return;
+        this.initCtx();
+        const now = this.ctx.currentTime;
+        
+        // Happy ethereal bells (C5, E5, G5, C6)
+        const freqs = [523.25, 659.25, 783.99, 1046.50];
+        freqs.forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+          
+          gain.gain.setValueAtTime(0.15, now + idx * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.4);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now + idx * 0.08);
+          osc.stop(now + idx * 0.08 + 0.4);
+        });
+      }
+
+      playWrong() {
+        if (!this.enabled) return;
+        this.initCtx();
+        const now = this.ctx.currentTime;
+
+        // Low creepy buzz pitch drop
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        
+        osc.frequency.setValueAtTime(150, now);
+        osc.frequency.exponentialRampToValueAtTime(60, now + 0.4);
+
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.4);
+      }
+
+      playStreak() {
+        if (!this.enabled) return;
+        this.initCtx();
+        const now = this.ctx.currentTime;
+
+        // Ascending ghost arpeggio
+        [400, 600, 800, 1200].forEach((freq, i) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, now + i * 0.06);
+
+          gain.gain.setValueAtTime(0.2, now + i * 0.06);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.06 + 0.3);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now + i * 0.06);
+          osc.stop(now + i * 0.06 + 0.3);
+        });
+      }
+
+      playTick() {
+        if (!this.enabled) return;
+        this.initCtx();
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, now);
+        gain.gain.setValueAtTime(0.05, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.05);
+      }
+    }
+
+    const audioSynth = new SpookyAudioSynthesizer();
+
+    // Rounding target definitions for P5
+    const TARGET_UNITS = [
+      { name: "萬位", unit: 10000, checkUnit: 1000, checkName: "千位", min: 50000, max: 999999 },
+      { name: "十萬位", unit: 100000, checkUnit: 10000, checkName: "萬位", min: 500000, max: 9999999 },
+      { name: "百萬位", unit: 1000000, checkUnit: 100000, checkName: "十萬位", min: 5000000, max: 99999999 },
+      { name: "千萬位", unit: 10000000, checkUnit: 1000000, checkName: "百萬位", min: 50000000, max: 999999999 },
+      { name: "億位", unit: 100000000, checkUnit: 10000000, checkName: "千萬位", min: 500000000, max: 9999999999 }
+    ];
+
+    // Game State Object
+    const gameState = {
+      studentClass: "5A",
+      studentNumber: "1",
+      studentName: "",
+      score: 0,
+      streak: 0,
+      currentQuestionIndex: 0,
+      totalQuestions: 10,
+      timerDuration: 180, // 3 minutes
+      timeRemaining: 180,
+      timerInterval: null,
+      questions: [],
+      wrongRecords: [], // Unique wrong records for error review page
+      hasCurrentQuestionBeenWrong: false
+    };
+
+    // Helper: Number formatting with commas
+    function formatNumber(num) {
+      return num.toLocaleString('en-US');
+    }
+
+    // Helper: Parse numerical string stripping commas/spaces
+    function parseInputNumber(str) {
+      if (!str) return NaN;
+      const clean = str.toString().replace(/,/g, '').trim();
+      return parseInt(clean, 10);
+    }
+
+    // Compute exact mathematical rounding
+    function calculateRounding(number, unit) {
+      return Math.round(number / unit) * unit;
+    }
+
+    // Generate random P5 rounding questions
+    function generateQuestions(count = 10) {
+      const qList = [];
+      for (let i = 0; i < count; i++) {
+        // Pick target place randomly
+        const targetObj = TARGET_UNITS[Math.floor(Math.random() * TARGET_UNITS.length)];
+        
+        // Generate random number that requires non-trivial rounding
+        let rawNum = Math.floor(Math.random() * (targetObj.max - targetObj.min + 1)) + targetObj.min;
+        
+        // Ensure check place digit is not zero to make it interesting
+        const checkDigit = Math.floor(rawNum / targetObj.checkUnit) % 10;
+        
+        const correctAnswer = calculateRounding(rawNum, targetObj.unit);
+
+        qList.push({
+          id: i + 1,
+          rawNumber: rawNum,
+          targetName: targetObj.name,
+          unit: targetObj.unit,
+          checkUnit: targetObj.checkUnit,
+          checkName: targetObj.checkName,
+          correctAnswer: correctAnswer
+        });
+      }
+      return qList;
+    }
+
+    // Show single page SPA
+    function showPage(pageId) {
+      ['page-start', 'page-game', 'page-leaderboard', 'page-review'].forEach(id => {
+        const el = document.getElementById(id);
+        if (id === pageId) {
+          el.classList.remove('hidden');
+        } else {
+          el.classList.add('hidden');
+        }
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Populate student number options 1 to 30
+    function initDropdowns() {
+      const selectNum = document.getElementById('select-number');
+      selectNum.innerHTML = '';
+      for (let i = 1; i <= 30; i++) {
+        const opt = document.createElement('option');
+        opt.value = i.toString();
+        opt.textContent = `${i} 號`;
+        selectNum.appendChild(opt);
+      }
+    }
+
+    // Start Game Session
+    function startGame() {
+      // Audio Context Initialization
+      audioSynth.initCtx();
+
+      // Read User Info
+      gameState.studentClass = document.getElementById('select-class').value;
+      gameState.studentNumber = document.getElementById('select-number').value;
+      gameState.studentName = document.getElementById('input-name').value.trim() || `學生${gameState.studentNumber}號`;
+
+      // Reset Game Variables
+      gameState.score = 0;
+      gameState.streak = 0;
+      gameState.currentQuestionIndex = 0;
+      gameState.timeRemaining = gameState.timerDuration;
+      gameState.wrongRecords = [];
+      gameState.questions = generateQuestions(gameState.totalQuestions);
+
+      // Reset HUD
+      updateHUD();
+
+      // Start Timer
+      clearInterval(gameState.timerInterval);
+      gameState.timerInterval = setInterval(tickTimer, 1000);
+
+      // Render First Question
+      renderQuestion();
+
+      // Switch Page
+      showPage('page-game');
+    }
+
+    // Timer countdown loop
+    function tickTimer() {
+      gameState.timeRemaining--;
+      updateHUD();
+
+      if (gameState.timeRemaining <= 10 && gameState.timeRemaining > 0) {
+        audioSynth.playTick();
+      }
+
+      if (gameState.timeRemaining <= 0) {
+        endGame();
+      }
+    }
+
+    // Update HUD stats
+    function updateHUD() {
+      const minutes = Math.floor(gameState.timeRemaining / 60);
+      const seconds = gameState.timeRemaining % 60;
+      document.getElementById('hud-timer').textContent = 
+        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+      document.getElementById('hud-score').textContent = gameState.score;
+      document.getElementById('hud-streak').textContent = `${gameState.streak} 🔥`;
+      document.getElementById('hud-progress').textContent = 
+        `${Math.min(gameState.currentQuestionIndex + 1, gameState.totalQuestions)} / ${gameState.totalQuestions}`;
+    }
+
+    // Render Question onto Game Screen
+    function renderQuestion() {
+      const q = gameState.questions[gameState.currentQuestionIndex];
+      gameState.hasCurrentQuestionBeenWrong = false;
+
+      // Hide previous feedback
+      const feedbackBox = document.getElementById('feedback-box');
+      feedbackBox.classList.add('hidden');
+      feedbackBox.innerHTML = '';
+
+      // Update Question Badges & Text
+      document.getElementById('q-number-badge').textContent = `${gameState.currentQuestionIndex + 1} / ${gameState.totalQuestions}`;
+      document.getElementById('q-target-badge').textContent = `取近似值至【${q.targetName}】`;
+      document.getElementById('q-number-display').textContent = formatNumber(q.rawNumber);
+      document.getElementById('q-target-place-text').textContent = q.targetName;
+
+      // Clear & focus input field
+      const inputEl = document.getElementById('input-answer');
+      inputEl.value = '';
+      inputEl.focus();
+
+      updateHUD();
+    }
+
+    // Process submitted answer
+    function handleAnswerSubmit(e) {
+      e.preventDefault();
+      const inputEl = document.getElementById('input-answer');
+      const userVal = parseInputNumber(inputEl.value);
+
+      if (isNaN(userVal)) {
+        showToast("請輸入有效的數字答案！", "error");
+        return;
+      }
+
+      const q = gameState.questions[gameState.currentQuestionIndex];
+      const isCorrect = (userVal === q.correctAnswer);
+
+      if (isCorrect) {
+        // Correct Answer Logic
+        audioSynth.playCorrect();
+
+        gameState.score += 10;
+        gameState.streak++;
+
+        // Bonus score for 5 streak
+        let streakBonusMsg = "";
+        if (gameState.streak === 5) {
+          gameState.score += 5;
+          audioSynth.playStreak();
+          streakBonusMsg = " 🌟 觸發鬼火連擊特別獎勵 +5 分！";
+        }
+
+        // Show green success feedback box
+        const feedbackBox = document.getElementById('feedback-box');
+        feedbackBox.className = "rounded-xl p-4 text-sm bg-emerald-950/90 border border-emerald-500/60 text-emerald-200 space-y-2 animate-fade-in";
+        feedbackBox.innerHTML = `
+          <div class="font-bold text-base flex items-center gap-2 text-spooky-green">
+            <i class="fas fa-check-circle"></i> 答對了！加 10 分！${streakBonusMsg}
+          </div>
+          <div class="text-xs text-emerald-300">
+            ${formatNumber(q.rawNumber)} 取近似值至【${q.targetName}】確實是 <span class="font-bold underline">${formatNumber(q.correctAnswer)}</span>！
+          </div>
+        `;
+        feedbackBox.classList.remove('hidden');
+
+        // Disable submit button briefly before moving next
+        const btn = document.getElementById('btn-submit-answer');
+        btn.disabled = true;
+
+        setTimeout(() => {
+          btn.disabled = false;
+          gameState.currentQuestionIndex++;
+          if (gameState.currentQuestionIndex < gameState.totalQuestions) {
+            renderQuestion();
+          } else {
+            endGame();
+          }
+        }, 1200);
+
+      } else {
+        // Wrong Answer Logic
+        audioSynth.playWrong();
+
+        gameState.score = Math.max(0, gameState.score - 5); // Subtract 5 points
+        gameState.streak = 0; // Reset streak
+
+        // Save into error records if not already recorded
+        if (!gameState.wrongRecords.some(r => r.qId === q.id)) {
+          gameState.wrongRecords.push({
+            qId: q.id,
+            rawNumber: q.rawNumber,
+            targetName: q.targetName,
+            unit: q.unit,
+            checkUnit: q.checkUnit,
+            checkName: q.checkName,
+            wrongInput: userVal,
+            correctAnswer: q.correctAnswer
+          });
+        }
+
+        // Generate Step-by-Step Thinking Process
+        const checkDigit = Math.floor(q.rawNumber / q.checkUnit) % 10;
+        const isRoundUp = checkDigit >= 5;
+
+        const hintHTML = `
+          <div class="bg-red-950/80 border border-red-500/60 rounded-xl p-4 text-red-200 space-y-3">
+            <div class="font-bold text-base text-red-400 flex items-center gap-2">
+              <i class="fas fa-ghost"></i> 答錯了！扣除 5 分，請閱讀思維過程並補答：
+            </div>
+            <div class="bg-slate-950/80 rounded-lg p-3 text-xs space-y-2 border border-purple-900/40 text-gray-200 font-sans">
+              <div class="font-bold text-purple-300">💡 思考與解題四捨五入步驟：</div>
+              <ol class="list-decimal list-inside space-y-1 text-gray-300">
+                <li>題目要求取近似值至【<span class="text-yellow-300 font-bold">${q.targetName}</span>】。</li>
+                <li>觀察它的上一數位（【<span class="text-emerald-400 font-bold">${q.checkName}</span>】），數字是 <span class="text-yellow-300 font-bold text-sm">${checkDigit}</span>。</li>
+                <li>根據四捨五入原則：因為 <span class="text-yellow-300 font-bold">${checkDigit}</span> ${isRoundUp ? '≥ 5，需要<b>「進位」</b>' : '< 5，需要<b>「捨去」</b>'}。</li>
+                <li>${isRoundUp ? `向【${q.targetName}】加 1，並將後面所有數位全歸 0。` : `將【${q.checkName}】及後面所有數位全歸 0。`}</li>
+              </ol>
+            </div>
+            <div class="text-xs text-amber-300 italic">請根據提示修正後重新輸入答案！</div>
+          </div>
+        `;
+
+        const feedbackBox = document.getElementById('feedback-box');
+        feedbackBox.className = "block animate-fade-in";
+        feedbackBox.innerHTML = hintHTML;
+        feedbackBox.classList.remove('hidden');
+
+        updateHUD();
+      }
+    }
+
+    // End Game Session
+    function endGame() {
+      clearInterval(gameState.timerInterval);
+
+      const timeUsed = gameState.timerDuration - gameState.timeRemaining;
+      const correctCount = gameState.questions.length - gameState.wrongRecords.length;
+
+      // Summary Object
+      const scoreRecord = {
+        studentClass: gameState.studentClass,
+        studentNumber: gameState.studentNumber,
+        studentName: gameState.studentName,
+        score: gameState.score,
+        timeUsed: timeUsed,
+        correctCount: correctCount,
+        totalQuestions: gameState.totalQuestions,
+        dateStr: new Date().toLocaleDateString('zh-HK')
+      };
+
+      // Save Score to Cloud via Firebase Manager
+      if (window.SpookyCloud) {
+        window.SpookyCloud.saveScore(scoreRecord);
+      }
+
+      // Update Summary UI
+      document.getElementById('res-score').textContent = gameState.score;
+      document.getElementById('res-time').textContent = `${timeUsed} 秒`;
+      document.getElementById('res-accuracy').textContent = `${correctCount} / ${gameState.totalQuestions}`;
+      document.getElementById('review-count-badge').textContent = gameState.wrongRecords.length;
+
+      // Show Leaderboard Page
+      showPage('page-leaderboard');
+    }
+
+    // Local score fallback save
+    function saveLocalScore(record) {
+      const localList = JSON.parse(localStorage.getItem('spooky_math_local_lb') || '[]');
+      localList.push(record);
+      localList.sort((a, b) => b.score - a.score || a.timeUsed - b.timeUsed);
+      localStorage.setItem('spooky_math_local_lb', JSON.stringify(localList));
+      updateLeaderboardUI(localList);
+    }
+
+    // Update Leaderboard DOM Table
+    function updateLeaderboardUI(records) {
+      const tbody = document.getElementById('leaderboard-tbody');
+      tbody.innerHTML = '';
+
+      if (!records || records.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center p-6 text-gray-500">暫時未有排名紀錄</td></tr>`;
+        return;
+      }
+
+      let userFoundRank = "--";
+
+      records.forEach((rec, idx) => {
+        const rank = idx + 1;
+        const isCurrentSession = (
+          rec.studentClass === gameState.studentClass &&
+          rec.studentNumber === gameState.studentNumber &&
+          rec.score === gameState.score
+        );
+
+        if (isCurrentSession && userFoundRank === "--") {
+          userFoundRank = rank;
+        }
+
+        const tr = document.createElement('tr');
+        tr.className = isCurrentSession 
+          ? "bg-purple-950/80 text-spooky-green font-bold border-l-4 border-spooky-green" 
+          : "hover:bg-slate-900/60";
+
+        // Medals for top 3
+        let rankBadge = `${rank}`;
+        if (rank === 1) rankBadge = `🥇 1`;
+        else if (rank === 2) rankBadge = `🥈 2`;
+        else if (rank === 3) rankBadge = `🥉 3`;
+
+        tr.innerHTML = `
+          <td class="p-3 font-bold">${rankBadge}</td>
+          <td class="p-3">${rec.studentClass} 班 (${rec.studentNumber}號)</td>
+          <td class="p-3">${escapeHtml(rec.studentName || '-')}</td>
+          <td class="p-3 text-right text-yellow-400 font-bold">${rec.score}</td>
+          <td class="p-3 text-right text-gray-300">${rec.timeUsed}s</td>
+          <td class="p-3 text-center text-xs text-gray-500">${rec.dateStr || '今日'}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById('res-rank').textContent = userFoundRank !== "--" ? `第 ${userFoundRank} 名` : `第 -- 名`;
+    }
+
+    function renderMockLeaderboard() {
+      const mockData = [
+        { studentClass: '5A', studentNumber: '8', studentName: '陳大文', score: 105, timeUsed: 95, dateStr: '今日' },
+        { studentClass: '5C', studentNumber: '15', studentName: '李小玲', score: 95, timeUsed: 110, dateStr: '今日' },
+        { studentClass: '5B', studentNumber: '3', studentName: '張志強', score: 90, timeUsed: 125, dateStr: '今日' }
+      ];
+      updateLeaderboardUI(mockData);
+    }
+
+    // Render Error Review Cards
+    function renderErrorReviewPage() {
+      const container = document.getElementById('review-list-container');
+      container.innerHTML = '';
+
+      if (gameState.wrongRecords.length === 0) {
+        container.innerHTML = `
+          <div class="bg-slate-950/80 rounded-2xl p-8 text-center space-y-3 border border-emerald-500/30">
+            <div class="text-4xl">🎉</div>
+            <div class="text-lg font-bold text-spooky-green">太棒了！本次測驗完全沒有錯題！</div>
+            <p class="text-xs text-gray-400">你已徹底掌握所有大數取的近似值原則！</p>
+          </div>
+        `;
+        showPage('page-review');
+        return;
+      }
+
+      gameState.wrongRecords.forEach((item, index) => {
+        const checkDigit = Math.floor(item.rawNumber / item.checkUnit) % 10;
+        const isRoundUp = checkDigit >= 5;
+
+        const card = document.createElement('div');
+        card.className = "bg-slate-950/90 rounded-xl p-5 border border-purple-800/60 space-y-3";
+
+        card.innerHTML = `
+          <div class="flex items-center justify-between border-b border-gray-800 pb-2">
+            <span class="text-xs font-bold text-purple-400">錯題 #${index + 1}</span>
+            <span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-950 text-spooky-green border border-emerald-700/50">
+              取近似值至【${item.targetName}】
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
+            <div class="bg-gray-900/80 p-3 rounded-lg border border-gray-800">
+              <div class="text-[10px] text-gray-400">原始指定數字</div>
+              <div class="text-lg font-mono font-bold text-white">${formatNumber(item.rawNumber)}</div>
+            </div>
+            <div class="bg-red-950/50 p-3 rounded-lg border border-red-900/50">
+              <div class="text-[10px] text-red-300">你的錯誤答案</div>
+              <div class="text-lg font-mono font-bold text-red-400">${formatNumber(item.wrongInput)}</div>
+            </div>
+            <div class="bg-emerald-950/50 p-3 rounded-lg border border-emerald-900/50">
+              <div class="text-[10px] text-emerald-300">正確解答</div>
+              <div class="text-lg font-mono font-bold text-spooky-green">${formatNumber(item.correctAnswer)}</div>
+            </div>
+          </div>
+
+          <div class="bg-purple-950/40 rounded-lg p-3 text-xs space-y-1.5 border border-purple-800/40 text-gray-300">
+            <div class="font-bold text-purple-300 flex items-center gap-1.5">
+              <i class="fas fa-brain"></i> 解題步驟分析：
+            </div>
+            <p>1. 題目要求取近似值至 <span class="text-yellow-300 font-bold">【${item.targetName}】</span>。</p>
+            <p>2. 檢查下一數位 <span class="text-emerald-400 font-bold">【${item.checkName}】</span> 的數值，此題為 <span class="text-yellow-300 font-bold text-sm">${checkDigit}</span>。</p>
+            <p>3. 因為 <span class="text-yellow-300 font-bold">${checkDigit}</span> ${isRoundUp ? '≥ 5，符合<b>「進位」</b>條件' : '< 5，符合<b>「捨去」</b>條件'}。</p>
+            <p class="text-spooky-green font-bold">👉 正確結果：${formatNumber(item.correctAnswer)}</p>
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+
+      showPage('page-review');
+    }
+
+    // Toast helper message
+    function showToast(msg, type = "info") {
+      const toast = document.createElement('div');
+      toast.className = `fixed bottom-5 right-5 z-50 px-4 py-3 rounded-xl shadow-2xl text-xs font-bold text-white transition-all transform duration-300 ${
+        type === 'error' ? 'bg-red-600' : 'bg-purple-600'
+      }`;
+      toast.textContent = msg;
+      document.body.appendChild(toast);
+      setTimeout(() => {
+        toast.remove();
+      }, 2500);
+    }
+
+    // Utility HTML escape
+    function escapeHtml(str) {
+      return str.replace(/[&<>"']/g, function(m) {
+        return {
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#039;'
+        }[m];
+      });
+    }
+
+    // DOM Event Listeners Binding
+    document.addEventListener('DOMContentLoaded', () => {
+      initDropdowns();
+
+      // Audio Toggle Button
+      document.getElementById('audio-toggle-btn').addEventListener('click', () => {
+        audioSynth.enabled = !audioSynth.enabled;
+        const icon = document.getElementById('audio-icon');
+        const text = document.getElementById('audio-status-text');
+        if (audioSynth.enabled) {
+          icon.className = "fas fa-volume-up";
+          text.textContent = "音效開";
+        } else {
+          icon.className = "fas fa-volume-mute text-red-400";
+          text.textContent = "音效關";
+        }
+      });
+
+      // Start Game Button
+      document.getElementById('btn-start-game').addEventListener('click', startGame);
+
+      // Answer Form Submit
+      document.getElementById('game-answer-form').addEventListener('submit', handleAnswerSubmit);
+
+      // Replay Game Button
+      document.getElementById('btn-replay').addEventListener('click', startGame);
+
+      // Review Errors Button
+      document.getElementById('btn-review-errors').addEventListener('click', renderErrorReviewPage);
+
+      // Back to Leaderboard Button
+      document.getElementById('btn-back-to-leaderboard').addEventListener('click', () => {
+        showPage('page-leaderboard');
+      });
+    });
+  </script>
+</body>
+</html>
